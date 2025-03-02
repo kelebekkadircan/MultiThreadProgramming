@@ -1,4 +1,7 @@
-﻿Console.WriteLine("Hello, World!");
+﻿
+using System.Threading.Channels;
+
+Console.WriteLine("Hello, World!");
 
 
 
@@ -734,16 +737,417 @@
 
 //// MultiThreadTimers Nedir  ? 
 
-Timer timer = new((state) =>
-{
-    Console.WriteLine(state);
-}, "tick tack toe", 2000, 1000);
+//Timer timer = new((state) =>
+//{
+//    Console.WriteLine(state);
+//}, "tick tack toe", 2000, 1000);
 
-Thread.Sleep(6000);
-timer.Change(0, 500);
+//Thread.Sleep(6000);
+//timer.Change(0, 500);
 
-Console.Read();
+//Console.Read();
 //// Single Thread Timers Nedir ?
 // tek thread tarafından kullanılırlar ve paralel çalışma yürütülmez
 
+#endregion
+
+
+#region Ders14Task
+//// Task Sınıfı Nedir ? 
+
+//// new Task
+//Task task = new Task(() =>
+//{
+//    for (int i = 0; i < 10; i++)
+//    {
+//        Console.WriteLine("Task 1 => " + i);
+//    }
+//});
+//task.Start();
+
+////Task Run
+//Task.Run(() =>
+//{
+//        for (int i = 0; i < 10; i++)
+//             Console.WriteLine("Task 1 => " + i);
+
+//});
+
+//// Task.Factory.StartNew
+//var task = Task.Factory.StartNew(() =>
+//{
+//    for (int i = 0; i < 10; i++)
+//        Console.WriteLine("Task 1 => " + i);
+
+//});
+
+
+
+
+
+
+//// Metotlar & Propertyler Nedir ?
+//Task task = Task.Run(() =>
+//{
+//    for (int i = 0; i < 10; i++)
+//        Console.WriteLine("Task 1 => " + i);
+
+//});
+//Task task2 = Task.Run(() =>
+//{
+//    for (int i = 10; i < 20; i++)
+//        Console.WriteLine("Task 2 => " + i);
+
+//});
+//Task task3 = Task.Run(() =>
+//{
+//    for (int i = 20; i < 30; i++)
+//        Console.WriteLine("Task 3 => " + i);
+
+//});
+
+//// Start
+//task.Start(); // burada hata alırız çünkü task run ile başlatıldı
+
+//// Wait
+//task.Wait(); // task bitene kadar bekler
+//Console.WriteLine("Task Bekledi");
+
+//// ContinueWith
+//task.ContinueWith(t =>
+//{
+//    Console.WriteLine("Task Bitti");
+//});
+
+//// WaitAll
+//Task.WaitAll(task,task2,task3);
+//Console.WriteLine("Tasklar Bitti");
+
+//// WhenAll
+//await Task.WhenAll(task, task2, task3); // async metotlarda kullanılır ve tasklerin bitmesini bekler ve devam eder
+//Console.WriteLine("Tasklar Bitti");
+
+//// WaitAny
+//Task.WaitAny(task,task2,task3);
+//Console.WriteLine("Task Bitti");
+
+////  Delay
+//await Task.Delay(2000);
+//Console.WriteLine("Task Bitti");
+
+//// FromCanceled
+//await Task.FromCanceled(new CancellationToken(true)); // taski iptal eder
+//Console.WriteLine("Task İPTAL");
+
+//// FromException
+//await Task.FromException(new Exception("Hata Oluştu")); // taski hata ile sonlandırır
+
+//// FromResult
+//Task<int> task4 = Task.FromResult(5); // taski başarılı bir şekilde sonlandırır
+//Console.WriteLine(await task4);
+
+////Propertyler Nedir ?
+//CompletedTask // başarılı bir şekilde sonlandırılmış task
+//CurrentId // taskin id sini döner
+// Factory // yeni task nesneleri oluşturmak için kullanılan propertydir.
+// IsCompleted // taskin tamamlanıp tamamlanmadığını döner
+// IsCanceled // taskin iptal edilip edilmediğini döner
+
+
+
+
+
+
+#endregion
+
+
+#region Ders15TaskScheduler
+
+// TaskFactory Nedir ?
+// task instance oluşturup yönetmek için kullanulan bir sınıftır.
+//Task.Factory.StartNew(() =>
+//{
+//    for (int i = 0; i < 10; i++)
+//        Console.WriteLine("Task 1 => " + i);
+
+//});
+//  ContinueWhenAll  => bu da asenkron çalışır
+//Task task1 = new(() =>
+//{
+//    for (int i = 0; i < 10; i++)
+//        Console.WriteLine("Task 1 => " + i);
+//});
+//Task task2 = new(() =>
+//{
+//    for (int i = 10; i < 20; i++)
+//        Console.WriteLine("Task 2 => " + i);
+//});
+//Task task3 = new(() =>
+//{
+//    for (int i = 20; i < 30; i++)
+//        Console.WriteLine("Task 3 => " + i);
+//});
+
+
+
+
+//task1.Start(); 
+//task2.Start();
+//task3.Start();
+
+//TaskFactory taskFactory = new();
+
+//////ContinueWhennAll
+//// taskFactory.ContinueWhenAll(new Task[] { task1, task2, task3 }, tasks =>
+////{
+////    Console.WriteLine("Tasklar Bitti");
+////});
+
+//////ContinueWhenAny
+//await taskFactory.ContinueWhenAny(new Task[] { task1, task2, task3 }, tasks =>
+//{
+//    Console.WriteLine("Tasklar Bitti");
+//});
+
+//Console.Read();
+
+
+//TaskScheduler Nedir ?
+// Task.Factory.StartNew(() =>
+//{
+//    for (int i = 0; i < 10; i++)
+//        Console.WriteLine("Task 1 => " + i);
+
+//}, new(), TaskCreationOptions.None, new CustomTaskSchedular());
+
+
+//class CustomTaskSchedular : TaskScheduler
+//{
+//    protected override IEnumerable<Task>? GetScheduledTasks()
+//    => null;
+
+//    protected override void QueueTask(Task task)
+//    => ThreadPool.QueueUserWorkItem(_ => TryExecuteTask(task));
+
+//    protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
+//    => true;
+//}
+
+
+//TaskCompletionSource Nedir ?
+
+
+#endregion
+
+
+#region Ders16AsyncAwait
+// task generic task ya da void olabilir ama best practice açısından void olmaz
+//async Task X () { };
+//async Task<int> Y() { return 45; };
+//async void Z() { };
+
+// async Task<string> ReadFileAsync()
+//{
+//    StreamReader streamReader = new("C:\\Users\\keleb\\source\\repos\\AsynchronousandMultithreading\\deneme.txt");
+//    string content = await streamReader.ReadToEndAsync();
+
+//    // burada async kullanmak zorunlu ve task dönerse await kullanılabilir.
+//    //Action action = async () =>
+//    //{
+//    //    await Task.Delay(2000);
+//    //};
+//    // action();
+//    return content;
+
+//}
+
+//var result = await ReadFileAsync();
+//Console.WriteLine(result);
+
+//Console.Read();
+#endregion
+
+
+#region Ders17CancellationToken
+
+#region ConfigureAwait
+
+//async Task<string> ReadFileAsync(string path)
+//{
+//    StreamReader streamReader = new(path);
+//    var content =  await streamReader.ReadToEndAsync().ConfigureAwait(false);
+//    Console.WriteLine("---END---");
+//    return content;
+//}
+
+//var content = await ReadFileAsync("C:\\Users\\keleb\\source\\repos\\AsynchronousandMultithreading\\deneme.txt");
+//Console.WriteLine(content);
+
+#endregion
+
+#region CancellationToken & CancellationTokenSource
+
+//async Task DoWorkAsync(CancellationToken cancellationToken)
+//{
+
+//    for (int i = 1; i <= 10; i++)
+//    {
+
+//        cancellationToken.ThrowIfCancellationRequested();
+//       await Console.Out.WriteLineAsync($"{i} => Döngü");
+//        await Task.Delay(1000);
+//    }
+
+//    Console.WriteLine("İşlem Bitti");
+
+
+//}
+
+
+//CancellationTokenSource cancellationTokenSource = new();
+
+//Task.Run(async () =>
+//{
+//    Thread.Sleep(5000);
+//   await cancellationTokenSource.CancelAsync();
+//});
+
+//try
+//{
+//await DoWorkAsync(cancellationTokenSource.Token);
+
+
+//}catch(Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+
+//}
+
+
+
+#endregion
+
+#region Task & ValueTask
+// ValueTask<int> HesaplaHizliAsync(int sayi)
+//{
+//    // Sonuç hemen hesaplanabiliyorsa, yeni bir Task oluşturmadan döndürmek için ValueTask kullanılabilir.
+//    int sonuc = sayi * sayi;
+//    return new ValueTask<int>(sonuc);
+//}
+
+// async Task MainAsync()
+//{
+//    int sonuc = await HesaplaHizliAsync(5);
+//    Console.WriteLine($"Hızlı Sonuç: {sonuc}");
+//}
+
+//await MainAsync();
+
+
+#endregion
+
+
+#endregion
+
+
+#region Ders18IAsyncEnumerable
+
+//async IAsyncEnumerable<int> GetNumbersAsync()
+//{
+//    for (int i = 0; i < 10; i++)
+//    {
+//        yield return i;
+//        await Task.Delay(1000);
+//    }
+//}
+
+//await foreach (var number in GetNumbersAsync())
+//{
+//    Console.WriteLine(number);
+//}
+
+
+#endregion
+
+
+#region Ders19ConcurrentCollections
+
+
+#endregion
+
+
+#region Ders20ChannelsLibrary
+//// Ders19 kodlarını yaz.
+
+//var channel = Channel.CreateBounded<int>(5);
+
+//Task producer = Task.Run(async () =>
+//{
+//    for (int i = 0; i < 20; i++)
+//    {
+//       await channel.Writer.WriteAsync(i);
+//        await Console.Out.WriteLineAsync($"Producer => {i}");
+//        await Task.Delay(1000);
+//    }
+//    channel.Writer.Complete();
+
+//});
+
+
+//Task consumer = Task.Run(async () =>
+//{
+
+//    await foreach( var item in channel.Reader.ReadAllAsync())
+//    {
+//        await Console.Out.WriteLineAsync($"Consumer => {item}");
+//        await Task.Delay(2000);
+//    }
+
+//});
+
+
+//await Task.WhenAll(producer, consumer);
+
+//Console.Read();
+
+#endregion
+
+#region Ders21StructuredConcurrency
+
+// async Task ProcessDataAsync(CancellationToken cancellationToken)
+//{
+//    // Üç farklı asenkron işlemi paralel olarak başlatıyoruz
+//    var task1 = DoWork1Async(cancellationToken);
+//    var task2 = DoWork2Async(cancellationToken);
+//    var task3 = DoWork3Async(cancellationToken);
+
+//    // Structured concurrency: Tüm alt görevler ana işlemin bir parçası olarak bekleniyor.
+//    // Eğer herhangi biri hata verirse, tüm görevler iptal edilebilir.
+//    await Task.WhenAll(task1, task2, task3);
+//}
+
+// async Task<string> DoWork1Async(CancellationToken cancellationToken)
+//{
+//    await Task.Delay(1000, cancellationToken);
+//    Console.WriteLine("İş 1 tamamlandı");
+//    return "İş 1 tamamlandı";
+//}
+
+// async Task<string> DoWork2Async(CancellationToken cancellationToken)
+//{
+//    await Task.Delay(1500, cancellationToken);
+//    Console.WriteLine("İş 2 tamamlandı");
+//    return "İş 2 tamamlandı";
+//}
+
+// async Task<string> DoWork3Async(CancellationToken cancellationToken)
+//{
+//    await Task.Delay(2000, cancellationToken);
+//    Console.WriteLine("İş 3 tamamlandı");
+//    return "İş 3 tamamlandı";
+//}
+
+//await ProcessDataAsync(CancellationToken.None);
+
+//Console.Read();
 #endregion
